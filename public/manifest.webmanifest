@@ -1,0 +1,16 @@
+{
+  "name": "ArsonistTimer",
+  "short_name": "ArsonistTimer",
+  "description": "Локальное приложение для задач и фокус-таймера.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0D0D0F",
+  "theme_color": "#FF6A00",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

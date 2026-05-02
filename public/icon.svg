@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="ArsonistTimer">
+  <defs>
+    <linearGradient id="bg" x1="34" y1="24" x2="224" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2A2020"/>
+      <stop offset="1" stop-color="#0D0D0F"/>
+    </linearGradient>
+    <linearGradient id="flame" x1="121" y1="42" x2="121" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFC857"/>
+      <stop offset="0.5" stop-color="#FF6A00"/>
+      <stop offset="1" stop-color="#D7332F"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="58" fill="url(#bg)"/>
+  <path fill="url(#flame)" d="M111 193c-29 0-52-21-52-50 0-18 8-32 21-46 10-11 17-22 19-40 0-2 3-3 4-2 18 17 27 34 28 50 7-6 12-14 14-25 1-2 3-2 5-1 12 12 16 26 16 40 0 43-23 74-55 74Z"/>
+  <path fill="#FFE8C2" d="M114 175c-15 0-26-10-26-24 0-9 5-16 11-23 5-5 8-11 9-20 0-2 2-3 4-1 9 9 14 18 14 27 4-3 6-7 8-13 0-2 2-2 4-1 6 7 9 14 9 22 0 19-14 33-33 33Z" opacity="0.92"/>
+  <circle cx="166" cy="164" r="48" fill="#141416" stroke="#FF6A00" stroke-width="10"/>
+  <path d="M166 135v31l22 13" fill="none" stroke="#F5F2EB" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M145 113h42" stroke="#FFC857" stroke-width="9" stroke-linecap="round"/>
+  <path d="M137 90c7 7 10 14 9 22 5-3 8-9 10-16 1-2 3-3 5-1 8 8 11 18 11 27 0 20-13 34-30 34-16 0-29-12-29-28 0-10 5-18 12-26 5-5 9-11 10-20 0-2 2-3 4-1Z" fill="url(#flame)" opacity="0.92"/>
+</svg>
