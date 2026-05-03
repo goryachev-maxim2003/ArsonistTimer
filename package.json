@@ -1,7 +1,7 @@
 {
   "name": "arsonist-timer",
   "private": true,
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Локальное приложение для задач, проектов и Pomodoro-фокуса.",
   "author": "Maxim Goryachev",
   "repository": {
@@ -51,7 +51,7 @@
     "appId": "local.arsonisttimer.desktop",
     "productName": "ArsonistTimer",
     "copyright": "Copyright © 2026 Maxim Goryachev",
-    "asar": true,
+    "asar": false,
     "files": [
       "dist/**/*",
       "electron/**/*",

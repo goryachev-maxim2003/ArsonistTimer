@@ -26,9 +26,23 @@ let updateStatus = {
 };
 
 function log(message) {
-  const line = `[${new Date().toISOString()}] ${message}\n`;
-  fs.appendFileSync(path.join(__dirname, "..", "electron-renderer.log"), line, "utf8");
+  try {
+    const line = `[${new Date().toISOString()}] ${message}\n`;
+    const logDir = app.getPath("userData");
+    fs.mkdirSync(logDir, { recursive: true });
+    fs.appendFileSync(path.join(logDir, "electron-renderer.log"), line, "utf8");
+  } catch {
+    // Logging must never prevent the app from opening, especially in packaged asar builds.
+  }
 }
+
+process.on("uncaughtException", (error) => {
+  log(`uncaughtException ${error?.stack ?? error}`);
+});
+
+process.on("unhandledRejection", (error) => {
+  log(`unhandledRejection ${error?.stack ?? error}`);
+});
 
 function createWindow() {
   const appIcon = nativeImage.createFromPath(iconPath);
@@ -162,6 +176,18 @@ if (process.platform === "win32") {
   app.setAppUserModelId(windowsAppId);
 }
 
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+log(`main-start packaged=${app.isPackaged} version=${app.getVersion()} lock=${gotSingleInstanceLock} userData=${app.getPath("userData")}`);
+
+if (!gotSingleInstanceLock) {
+  app.quit();
+} else {
+  app.on("second-instance", bringAppToFront);
+  app.on("child-process-gone", (_event, details) => {
+    log(`child-process-gone ${JSON.stringify(details)}`);
+  });
+}
+
 ipcMain.on("timer-complete", (_event, payload = {}) => {
   const title = typeof payload.title === "string" ? payload.title : "Таймер завершён";
   const body = typeof payload.body === "string" ? payload.body : "Откройте ArsonistTimer, чтобы выбрать следующее действие.";
@@ -211,13 +237,16 @@ ipcMain.handle("updates:install", () => {
   return updateStatus;
 });
 
-app.whenReady().then(() => {
-  createWindow();
+if (gotSingleInstanceLock) {
+  app.whenReady().then(() => {
+    log("app-ready");
+    createWindow();
 
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    app.on("activate", () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
   });
-});
+}
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
