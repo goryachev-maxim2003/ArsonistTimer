@@ -20,7 +20,7 @@
 ### macOS
 
 1. Откройте последнюю версию в разделе Releases.
-2. Скачайте файл `ArsonistTimer-... .dmg`.
+2. Скачайте файл `ArsonistTimer-...-universal.dmg`.
 3. Откройте `.dmg` и перетащите ArsonistTimer в папку `Applications`.
 4. Запускайте приложение из `Applications`, Launchpad или Dock.
 

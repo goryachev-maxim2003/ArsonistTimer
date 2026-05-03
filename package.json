@@ -1,7 +1,7 @@
 {
   "name": "arsonist-timer",
   "private": true,
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Локальное приложение для задач, проектов и Pomodoro-фокуса.",
   "author": "Maxim Goryachev",
   "repository": {
@@ -94,20 +94,21 @@
         {
           "target": "dmg",
           "arch": [
-            "x64",
-            "arm64"
+            "universal"
           ]
         },
         {
           "target": "zip",
           "arch": [
-            "x64",
-            "arm64"
+            "universal"
           ]
         }
       ],
       "icon": "electron/assets/arsonisttimer-clock.icns",
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
     },
     "dmg": {
       "artifactName": "ArsonistTimer-${version}-${arch}.${ext}"
