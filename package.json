@@ -1,7 +1,7 @@
 {
   "name": "arsonist-timer",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Локальное приложение для задач, проектов и Pomodoro-фокуса.",
   "author": "Maxim Goryachev",
   "repository": {
@@ -64,7 +64,8 @@
       {
         "provider": "github",
         "owner": "goryachev-maxim2003",
-        "repo": "ArsonistTimer"
+        "repo": "ArsonistTimer",
+        "releaseType": "release"
       }
     ],
     "win": {
