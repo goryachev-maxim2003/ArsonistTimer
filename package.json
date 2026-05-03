@@ -2,6 +2,12 @@
   "name": "arsonist-timer",
   "private": true,
   "version": "2.0.0",
+  "description": "Локальное приложение для задач, проектов и Pomodoro-фокуса.",
+  "author": "Maxim Goryachev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goryachev-maxim2003/ArsonistTimer.git"
+  },
   "type": "module",
   "main": "electron/main.cjs",
   "scripts": {
@@ -10,11 +16,17 @@
     "preview": "vite preview --host 127.0.0.1",
     "app": "npm run build && electron .",
     "app:open": "electron .",
-    "package:local": "npm run build && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-local-app.ps1"
+    "package:local": "npm run build && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-local-app.ps1",
+    "icon:mac": "bash scripts/create-mac-icon.sh",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && npm run icon:mac && electron-builder --mac",
+    "release": "npm run build && electron-builder --publish always"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.4",
     "date-fns": "^4.1.0",
+    "electron-updater": "^6.8.3",
     "framer-motion": "^12.23.24",
     "idb": "^8.0.3",
     "lucide-react": "^0.468.0",
@@ -28,6 +40,7 @@
     "@types/react-dom": "^19.2.2",
     "autoprefixer": "^10.4.21",
     "electron": "^41.3.0",
+    "electron-builder": "^26.8.1",
     "postcss": "^8.5.6",
     "rcedit": "^5.0.2",
     "tailwindcss": "^3.4.18",
@@ -37,7 +50,8 @@
   "build": {
     "appId": "local.arsonisttimer.desktop",
     "productName": "ArsonistTimer",
-    "icon": "electron/assets/arsonisttimer-clock.ico",
+    "copyright": "Copyright © 2026 Maxim Goryachev",
+    "asar": true,
     "files": [
       "dist/**/*",
       "electron/**/*",
@@ -45,6 +59,57 @@
     ],
     "directories": {
       "output": "release"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "goryachev-maxim2003",
+        "repo": "ArsonistTimer"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "electron/assets/arsonisttimer-clock.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ArsonistTimer",
+      "deleteAppDataOnUninstall": false
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "electron/assets/arsonisttimer-clock.icns",
+      "category": "public.app-category.productivity"
+    },
+    "dmg": {
+      "artifactName": "ArsonistTimer-${version}-${arch}.${ext}"
     }
   }
 }

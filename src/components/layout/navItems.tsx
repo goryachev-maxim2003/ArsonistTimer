@@ -1,6 +1,7 @@
 import {
   BarChart3,
   CalendarClock,
+  Download,
   ListChecks,
   Settings,
   type LucideIcon,
@@ -12,5 +13,6 @@ export const navItems: Array<{ route: AppRoute; labelKey: I18nKey; icon: LucideI
   { route: "tasks", labelKey: "nav.tasks", icon: ListChecks },
   { route: "stats", labelKey: "nav.stats", icon: BarChart3 },
   { route: "forecast", labelKey: "nav.forecast", icon: CalendarClock },
+  { route: "updates", labelKey: "nav.updates", icon: Download },
   { route: "settings", labelKey: "nav.settings", icon: Settings },
 ];

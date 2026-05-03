@@ -2,10 +2,28 @@ const { app, BrowserWindow, ipcMain, nativeImage, Notification, shell } = requir
 const fs = require("node:fs");
 const path = require("node:path");
 
+let autoUpdater;
+try {
+  autoUpdater = require("electron-updater").autoUpdater;
+} catch {
+  autoUpdater = undefined;
+}
+
 const isDev = Boolean(process.env.ARSONIST_DEV_SERVER_URL);
 const windowsAppId = "local.arsonisttimer.desktop";
 const iconPath = path.join(__dirname, "assets", "arsonisttimer-clock.png");
 let mainWindow;
+let updateStatus = {
+  state: "idle",
+  currentVersion: app.getVersion(),
+  availableVersion: undefined,
+  releaseName: undefined,
+  releaseNotes: undefined,
+  releaseDate: undefined,
+  progress: undefined,
+  error: undefined,
+  supported: app.isPackaged && Boolean(autoUpdater),
+};
 
 function log(message) {
   const line = `[${new Date().toISOString()}] ${message}\n`;
@@ -76,6 +94,68 @@ function bringAppToFront() {
   }, 5000);
 }
 
+function normalizeReleaseNotes(releaseNotes) {
+  if (!releaseNotes) return undefined;
+  if (typeof releaseNotes === "string") return releaseNotes;
+  if (Array.isArray(releaseNotes)) {
+    return releaseNotes
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (item && typeof item === "object" && typeof item.note === "string") return item.note;
+        return "";
+      })
+      .filter(Boolean)
+      .join("\n\n");
+  }
+  return undefined;
+}
+
+function publishUpdateStatus(patch = {}) {
+  updateStatus = { ...updateStatus, ...patch };
+  BrowserWindow.getAllWindows().forEach((window) => {
+    window.webContents.send("updates:status", updateStatus);
+  });
+  return updateStatus;
+}
+
+function updateInfoPatch(info = {}) {
+  return {
+    availableVersion: info.version,
+    releaseName: info.releaseName,
+    releaseNotes: normalizeReleaseNotes(info.releaseNotes),
+    releaseDate: info.releaseDate,
+  };
+}
+
+if (autoUpdater) {
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on("checking-for-update", () => {
+    publishUpdateStatus({ state: "checking", error: undefined, progress: undefined });
+  });
+
+  autoUpdater.on("update-available", (info) => {
+    publishUpdateStatus({ state: "available", ...updateInfoPatch(info), error: undefined, progress: undefined });
+  });
+
+  autoUpdater.on("update-not-available", (info) => {
+    publishUpdateStatus({ state: "none", ...updateInfoPatch(info), error: undefined, progress: undefined });
+  });
+
+  autoUpdater.on("download-progress", (progress) => {
+    publishUpdateStatus({ state: "downloading", progress, error: undefined });
+  });
+
+  autoUpdater.on("update-downloaded", (info) => {
+    publishUpdateStatus({ state: "downloaded", ...updateInfoPatch(info), progress: undefined, error: undefined });
+  });
+
+  autoUpdater.on("error", (error) => {
+    publishUpdateStatus({ state: "error", error: error?.message ?? String(error), progress: undefined });
+  });
+}
+
 app.setName("ArsonistTimer");
 
 if (process.platform === "win32") {
@@ -93,6 +173,42 @@ ipcMain.on("timer-complete", (_event, payload = {}) => {
     notification.on("click", bringAppToFront);
     notification.show();
   }
+});
+
+ipcMain.handle("updates:get-status", () => updateStatus);
+
+ipcMain.handle("updates:check", async () => {
+  if (!app.isPackaged || !autoUpdater) {
+    return publishUpdateStatus({
+      state: "unsupported",
+      supported: app.isPackaged && Boolean(autoUpdater),
+      error: "Проверка обновлений доступна только в установленной версии приложения.",
+    });
+  }
+
+  try {
+    await autoUpdater.checkForUpdates();
+  } catch (error) {
+    publishUpdateStatus({ state: "error", error: error?.message ?? String(error) });
+  }
+  return updateStatus;
+});
+
+ipcMain.handle("updates:download", async () => {
+  if (!app.isPackaged || !autoUpdater) return updateStatus;
+  try {
+    await autoUpdater.downloadUpdate();
+  } catch (error) {
+    publishUpdateStatus({ state: "error", error: error?.message ?? String(error) });
+  }
+  return updateStatus;
+});
+
+ipcMain.handle("updates:install", () => {
+  if (autoUpdater && updateStatus.state === "downloaded") {
+    autoUpdater.quitAndInstall(false, true);
+  }
+  return updateStatus;
 });
 
 app.whenReady().then(() => {

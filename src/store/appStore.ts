@@ -105,7 +105,7 @@ export const defaultStreak: Streak = {
 
 function initialRoute(): AppRoute {
   const saved = localStorage.getItem("arsonist_last_route");
-  return saved === "stats" || saved === "forecast" || saved === "settings" ? saved : "tasks";
+  return saved === "stats" || saved === "forecast" || saved === "updates" || saved === "settings" ? saved : "tasks";
 }
 
 const defaultProjects: Project[] = [
@@ -858,14 +858,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   stopTimer: async () => {
     const timer = get().timer;
     if (timer.status === "idle") return;
-    if (timer.mode !== "focus") {
-      get().resetTimer("focus");
-      set({ toast: "Перерыв остановлен." });
-      return;
-    }
-    const elapsed = timer.durationSeconds - timer.remainingSeconds;
-    const status: FocusSessionStatus = elapsed / timer.durationSeconds >= 0.5 && get().settings.timer.savePartialSessions ? "partial" : "cancelled";
-    await get().completeTimer(status);
+    get().resetTimer("focus");
+    set({ toast: timer.mode === "focus" ? "Таймер прерван." : "Перерыв остановлен." });
   },
 
   completeTimer: async (status = "completed") => {

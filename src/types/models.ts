@@ -8,6 +8,7 @@ export type AppRoute =
   | "history"
   | "guide"
   | "forecast"
+  | "updates"
   | "settings";
 
 export type TaskStatus = "todo" | "in_progress" | "completed" | "archived";

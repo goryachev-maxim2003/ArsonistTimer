@@ -9,12 +9,15 @@ import { AppLayout } from "../components/layout/AppLayout";
 import { TasksPage } from "../pages/TasksPage";
 import { StatsPage } from "../pages/StatsPage";
 import { ForecastPage } from "../pages/ForecastPage";
+import { UpdatesPage } from "../pages/UpdatesPage";
 import { SettingsPage } from "../pages/SettingsPage";
+import { UpdatePrompt } from "../components/updates/UpdatePrompt";
 
 const pages = {
   tasks: TasksPage,
   stats: StatsPage,
   forecast: ForecastPage,
+  updates: UpdatesPage,
   settings: SettingsPage,
 };
 
@@ -49,6 +52,7 @@ export default function App() {
   return (
     <AppLayout>
       <Page />
+      <UpdatePrompt />
     </AppLayout>
   );
 }

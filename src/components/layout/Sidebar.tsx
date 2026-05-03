@@ -17,7 +17,7 @@ export function Sidebar() {
         <button
           className={`flex min-w-0 items-center gap-3 text-left ${collapsed ? "justify-center" : ""}`}
           onClick={() => setRoute("tasks")}
-          aria-label="Open dashboard"
+          aria-label="Открыть задачи"
         >
           <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[var(--primary)] text-black shadow-ember">
             <Flame className="h-5 w-5" />
@@ -29,20 +29,20 @@ export function Sidebar() {
             </span>
           )}
         </button>
-        {!collapsed && <Button variant="ghost" icon={<PanelLeftClose className="h-4 w-4" />} aria-label="Collapse sidebar" onClick={toggleSidebar} />}
+        {!collapsed && <Button variant="ghost" icon={<PanelLeftClose className="h-4 w-4" />} aria-label="Свернуть боковую панель" onClick={toggleSidebar} />}
         {collapsed && (
           <button
             className="grid h-10 w-10 place-items-center rounded-lg text-[var(--muted)] transition hover:bg-white/5 hover:text-[var(--text)]"
-            aria-label="Expand sidebar"
+            aria-label="Развернуть боковую панель"
             onClick={toggleSidebar}
-            title="Expand sidebar"
+            title="Развернуть боковую панель"
           >
             <PanelLeftOpen className="h-5 w-5" />
           </button>
         )}
       </div>
 
-      <nav className="space-y-2" aria-label="Primary navigation">
+      <nav className="space-y-2" aria-label="Основная навигация">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = route === item.route;

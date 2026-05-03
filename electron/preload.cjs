@@ -9,4 +9,24 @@ contextBridge.exposeInMainWorld("arsonistDesktop", {
       body: typeof payload?.body === "string" ? payload.body : "",
     });
   },
+  updates: {
+    getStatus() {
+      return ipcRenderer.invoke("updates:get-status");
+    },
+    check() {
+      return ipcRenderer.invoke("updates:check");
+    },
+    download() {
+      return ipcRenderer.invoke("updates:download");
+    },
+    install() {
+      return ipcRenderer.invoke("updates:install");
+    },
+    onStatus(callback) {
+      if (typeof callback !== "function") return () => undefined;
+      const listener = (_event, status) => callback(status);
+      ipcRenderer.on("updates:status", listener);
+      return () => ipcRenderer.removeListener("updates:status", listener);
+    },
+  },
 });
